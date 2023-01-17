@@ -13,18 +13,18 @@ CREATE DATABASE shop;
 
 USE shop;
 
-CREATE TABLE SALEES1 (
-		Store CHAR(10),
-        Week INT,
-        Day CHAR(10),
-        SalesPerson CHAR(10),
-        SalesAmount FLOAT,
-        Month CHAR(3)
+CREATE TABLE SALES1 (
+		Store VARCHAR(20) NOT NULL,
+        Week VARCHAR(20) NOT NULL,
+        Day VARCHAR(20) NOT NULL,
+        SalesPerson VARCHAR(20) NOT NULL,
+        SalesAmount DECIMAL(6, 2) NOT NULL,
+        Month VARCHAR(20) NULL
 );
 
 SHOW TABLES FROM PARTS;
 
-INSERT INTO SALEES1 (Store, Week, Day, SalesPerson, SalesAmount, Month)
+INSERT INTO SALES1 (Store, Week, Day, SalesPerson, SalesAmount, Month)
 VALUES 
 ('London', 2, 'Monday', 'Frank', 56.25, 'May'),
 ('London', 5, 'Tuesday', 'Frank', 74.32, 'Sep'),
@@ -37,4 +37,4 @@ VALUES
 ('London', 6, 'Friday', 'Josie', 74.02, 'Oct'),
 ('Dusseldorf', 1, 'Saturday', 'Manfred', 43.11, 'Apr');
 
-SELECT * FROM SALEES1
+SELECT * FROM SALES1
