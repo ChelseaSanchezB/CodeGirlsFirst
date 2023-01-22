@@ -1,6 +1,7 @@
 USE parts;
 
 SELECT * FROM supplier;
+-- (s_id, sname, status, city)
 -- S1	SMITH	20	LONDON
 -- S2	JONES	10	PARIS
 -- S3	BLAKE	30	PARIS
@@ -8,6 +9,7 @@ SELECT * FROM supplier;
 -- S5	ADAMS	30	ATHENS
 
 SELECT * FROM supply;
+-- (s_id, p_id, j_id, quantity)
 -- S1	P1	J1	200
 -- S1	P1	J1	700
 -- S2	P3	J1	400
@@ -34,15 +36,16 @@ SELECT * FROM supply;
 -- S5	P6	J4	500
 
 -- Find the name and status of each supplier who supplies project J2
-SELECT s.sname, s.status
+SELECT DISTINCT s.sname, s.status
 FROM supply sp
-JOIN supplier s
-WHERE
+INNER JOIN supplier s
+ON
 sp.S_ID = s.S_ID
-AND
+WHERE
 sp.J_ID = 'J2';
 
 SELECT * FROM project;
+-- (j_id, jname, city)
 -- J1	SORTER	PARIS
 -- J2	DISPLAY	ROME
 -- J3	OCR	ATHENS
@@ -53,7 +56,7 @@ SELECT * FROM project;
 
 
 -- Find the name and city of each project supplied by a London-based supplier
-SELECT p.jname, p.city
+SELECT DISTINCT p.jname, p.city
 FROM supplier s
 INNER JOIN project p
 	ON 
@@ -63,7 +66,7 @@ s.city = 'London';
 
 
 -- Find the name and city of each project not supplied by a London-based supplier
-SELECT p.jname, p.city
+SELECT DISTINCT p.jname, p.city
 FROM supplier s
 INNER JOIN project p
 	ON 
@@ -71,12 +74,25 @@ INNER JOIN project p
 WHERE 
 s.city <> 'London';
 
+SELECT * FROM part;
+-- (p_id, pname, colour, weight, city)
+-- P1	NUT	RED	12	LONDON
+-- P2	BOLT	GREEN	17	PARIS
+-- P3	SCREW	BLUE	17	ROME
+-- P4	SCREW	RED	14	LONDON
+-- P5	CAM	BLUE	12	PARIS
+-- P6	COG	RED	19	LONDON
 
 -- Find the supplier name, part name and project name for each case where a
 -- supplier supplies a project with a part, but also the supplier city, project city
 -- and part city are the same.
-SELECT s.sname, pt.pname, p.jname, s.city, pt.city, p.city
+SELECT DISTINCT s.sname, pt.pname, p.jname
 FROM
-	supplier s, part pt, project p
-JOIN 
+	supply sp, supplier s
+INNER JOIN part pt ON s.city = pt.city
+INNER JOIN project p ON pt.city = p.city
+WHERE 
+sp.p_id = pt.p_id
+AND 
+sp.j_id = p.j_id;
 
