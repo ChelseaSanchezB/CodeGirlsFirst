@@ -88,11 +88,12 @@ SELECT * FROM part;
 -- and part city are the same.
 SELECT DISTINCT s.sname, pt.pname, p.jname
 FROM
-	supply sp, supplier s
-INNER JOIN part pt ON s.city = pt.city
-INNER JOIN project p ON pt.city = p.city
+	supplier s
+INNER JOIN part pt ON pt.p_id = sp.p_id
+INNER JOIN supply sp ON s.s_id = sp.s_id
+INNER JOIN project p ON p.j_id = sp.j_id
 WHERE 
-sp.p_id = pt.p_id
+s.city = pt.city
 AND 
-sp.j_id = p.j_id;
+sp.city = p.city;
 
