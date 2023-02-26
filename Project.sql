@@ -1,6 +1,10 @@
+-- Creating a database
+
 CREATE DATABASE SALES;
 
 USE SALES;
+
+-- Creating 7 tables (store, sales, supply, comp.1,2,3,4)
 
 CREATE TABLE STORE (
 	I_ID VARCHAR(2),
@@ -10,6 +14,12 @@ CREATE TABLE STORE (
     SOLD INT,
 PRIMARY KEY (I_ID)
 );
+
+CREATE TABLE SALES (
+	I_ID VARCHAR(2),
+    SOLD FLOAT,
+FOREIGN KEY (I_ID) REFERENCES STORE (I_ID)
+); 
 
 CREATE TABLE SUPPLY (
 	I_ID VARCHAR(2),
@@ -46,8 +56,13 @@ CREATE TABLE COMPETITOR_4 (
 FOREIGN KEY (I_ID) REFERENCES STORE (I_ID)
 );
 
+-- Making alterations
+
 ALTER TABLE STORE
 DROP COLUMN ITYPE;
+
+ALTER TABLE STORE
+DROP COLUMN SOLD;
 
 ALTER TABLE STORE
 MODIFY COLUMN PRICE FLOAT;
@@ -62,6 +77,8 @@ MODIFY COLUMN PRICE FLOAT;
 ALTER TABLE COMPETITOR_4
 MODIFY COLUMN PRICE FLOAT;
 
+-- Filling in my tables
+
 INSERT INTO STORE
 (I_ID, INAME, PRICE, SOLD)
 VALUES
@@ -74,6 +91,19 @@ VALUES
 ('I7', 'Lego', 24.99, 50),
 ('I8', 'Hot Wheels', 2.00, 45),
 ('I9', 'UNO', 6.00, 35);
+
+INSERT INTO SALES
+(I_ID, SOLD) 
+VALUES
+('I1', 15),
+('I2', 17),
+('I3', 32),
+('I4', 10),
+('I5', 9),
+('I6', 29),
+('I7', 50),
+('I8', 45),
+('I9', 35);
 
 INSERT INTO SUPPLY
 (I_ID, QUANTITY, PRICE)
@@ -115,7 +145,11 @@ INSERT INTO COMPETITOR_4
 VALUES
 ('I7', 50.00, 250);
 
+-- Visualising my tables
+
 SHOW TABLES FROM SALES;
+SELECT * FROM STORE;
+SELECT * FROM SALES;
 
  -- How much did the store make in profit in the past month?
 CREATE VIEW STORE_PROFIT
@@ -126,4 +160,34 @@ FROM STORE;
 SELECT PRICE, SOLD, PRICE*SOLD AS PROFIT
 FROM STORE_PROFIT;
 
+SELECT SUM(PROFIT)
+FROM STORE_PROFIT;
 
+-- A customer wants to buy a BARBIE at the cheapest price, where should they purchase from? (subquery-incomplete)
+SELECT I_ID, PRICE 
+FROM STORE s, COMPETITOR_1 c1, COMPETITOR_2 c2
+WHERE s.I_ID = c1.I_ID = c2.I_ID
+AND (s.PRICE < c1.PRICE OR s.PRICE < c2.PRICE);
+
+
+-- Trigger to update the sold items and the profit made from it
+
+
+-- Does competitor 4 sell more of item i than the store?
+
+
+-- Which items does the store sell in common with competitor 2? (Joins with views)
+CREATE VIEW competitors_items2
+AS
+SELECT s.I_ID AS stores_items, 
+		c2.I_ID AS competitors_items,
+        sa.SOLD
+FROM STORE s
+INNER JOIN COMPETITOR_2 c2
+INNER JOIN SALES sa
+ON s.I_ID = c2.I_ID
+AND sa.SOLD > 0;
+
+SELECT * FROM competitors_items2;
+
+-- What is the remaining stock left after sales?
