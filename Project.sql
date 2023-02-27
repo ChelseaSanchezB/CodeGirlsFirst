@@ -163,15 +163,29 @@ FROM STORE_PROFIT;
 SELECT SUM(PROFIT)
 FROM STORE_PROFIT;
 
--- A customer wants to buy a BARBIE at the cheapest price, where should they purchase from? (subquery-incomplete)
-SELECT I_ID, PRICE 
+-- What items does the store, competitor 1 and 2 all sell? (subquery)
+SELECT s.I_ID AS store_ID, c1.I_ID AS comp1_ID, c2.I_ID AS comp2_ID
 FROM STORE s, COMPETITOR_1 c1, COMPETITOR_2 c2
-WHERE s.I_ID = c1.I_ID = c2.I_ID
-AND (s.PRICE < c1.PRICE OR s.PRICE < c2.PRICE);
+WHERE s.I_ID = c1.I_ID
+AND s.I_ID = c2.I_ID;
 
 
--- Trigger to update the sold items and the profit made from it
+-- Trigger to update new sold items (Trigger- INCOMPLETE)
+DELIMITER //
+CREATE TRIGGER New_Sales5
+AFTER INSERT ON SALES
+FOR EACH ROW
+BEGIN
+	IF EXISTS (SELECT * FROM SALES WHERE I_ID = NEW.I_ID) THEN 
+		SET SOLD = SOLD + NEW.SOLD
+		WHERE I_ID = NEW.I_ID;
+	END IF;
+END//
+DELIMITER ;
 
+INSERT INTO SALES
+(I_ID, SOLD)
+VALUES ('I2', 4.0);
 
 -- Does competitor 4 sell more of item i than the store?
 
@@ -190,4 +204,12 @@ AND sa.SOLD > 0;
 
 SELECT * FROM competitors_items2;
 
--- What is the remaining stock left after sales?
+-- Creating a stored procedure to call a query repeatedly (stored procedure)
+DELIMITER //
+CREATE PROCEDURE PriceOfGoods()
+BEGIN
+	SELECT I_ID, PRICE FROM STORE;
+END//
+DELIMITER ;
+
+CALL PriceOfGoods();
